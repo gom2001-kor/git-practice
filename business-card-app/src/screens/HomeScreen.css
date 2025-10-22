@@ -1,0 +1,10 @@
+.home-screen {
+  background-color: var(--gray-100);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}

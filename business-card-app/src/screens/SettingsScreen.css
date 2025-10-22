@@ -1,0 +1,69 @@
+.settings-screen {
+  background-color: var(--gray-100);
+}
+
+.settings-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.settings-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-md);
+  padding: 0 var(--spacing-lg);
+}
+
+.settings-item {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.theme-options {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+}
+
+.theme-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theme-option.active {
+  border-color: var(--theme-primary);
+  background-color: var(--theme-light);
+}
+
+.theme-option:hover {
+  border-color: var(--theme-primary);
+}
+
+.theme-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+.blue-theme-preview {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+}
+
+.pink-theme-preview {
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+}

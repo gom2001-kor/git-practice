@@ -1,0 +1,71 @@
+.business-card-preview {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.business-card-preview:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--theme-primary);
+}
+
+.card-preview-header {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-preview-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--theme-light);
+}
+
+.card-preview-info {
+  flex: 1;
+}
+
+.card-preview-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.card-preview-detail {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin: 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-preview-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.card-preview-template {
+  background-color: var(--theme-light);
+  color: var(--theme-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.card-preview-privacy {
+  text-transform: capitalize;
+}

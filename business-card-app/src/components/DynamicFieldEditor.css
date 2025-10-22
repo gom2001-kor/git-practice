@@ -1,0 +1,85 @@
+.dynamic-field-editor {
+  margin-bottom: var(--spacing-lg);
+}
+
+.field-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.btn-add-field {
+  background-color: var(--theme-light);
+  color: var(--theme-dark);
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-field:hover:not(:disabled) {
+  background-color: var(--theme-primary);
+  color: var(--white);
+}
+
+.btn-add-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.field-label-input {
+  grid-column: 1;
+}
+
+.field-value-input {
+  grid-column: 2;
+}
+
+.btn-remove-field {
+  grid-column: 3;
+  background-color: var(--gray-200);
+  color: var(--gray-700);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+}
+
+.btn-remove-field:hover {
+  background-color: #ff5252;
+  color: var(--white);
+}
+
+@media (max-width: 768px) {
+  .field-item {
+    grid-template-columns: 1fr;
+  }
+
+  .field-label-input,
+  .field-value-input {
+    grid-column: 1;
+  }
+
+  .btn-remove-field {
+    grid-column: 1;
+    justify-self: end;
+  }
+}
