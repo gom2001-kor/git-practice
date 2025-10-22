@@ -42,10 +42,10 @@ export class BusinessCard {
     this.name = name;
     this.photoUrl = photoUrl;
     this.address = address;
-    this.phones = phones.map(p => typeof p === 'object' ? DynamicField.fromJSON(p) : p);
-    this.emails = emails.map(e => typeof e === 'object' ? DynamicField.fromJSON(e) : e);
-    this.websites = websites.map(w => typeof w === 'object' ? DynamicField.fromJSON(w) : w);
-    this.faxes = faxes.map(f => typeof f === 'object' ? DynamicField.fromJSON(f) : f);
+    this.phones = phones.map(p => p instanceof DynamicField ? p : DynamicField.fromJSON(p));
+    this.emails = emails.map(e => e instanceof DynamicField ? e : DynamicField.fromJSON(e));
+    this.websites = websites.map(w => w instanceof DynamicField ? w : DynamicField.fromJSON(w));
+    this.faxes = faxes.map(f => f instanceof DynamicField ? f : DynamicField.fromJSON(f));
     this.templateId = templateId;
     this.colorTheme = colorTheme;
     this.privacy = privacy;

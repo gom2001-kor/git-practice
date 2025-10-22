@@ -152,9 +152,14 @@ export const firestoreService = {
 
       // Get card details for each saved card
       const cardIds = querySnapshot.docs.map(doc => doc.data().cardId);
-      const cards = await Promise.all(
+      const results = await Promise.allSettled(
         cardIds.map(cardId => this.getCard(cardId))
       );
+
+      // Filter out failed promises and return only successful cards
+      const cards = results
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value);
 
       return cards;
     } catch (error) {

@@ -41,7 +41,7 @@ function CreateCardScreen({ user, theme }) {
         setPhotoFile(compressed);
         const reader = new FileReader();
         reader.onload = (e) => {
-          setCard({ ...card, photoUrl: e.target.result });
+          setCard(new BusinessCard({ ...card, photoUrl: e.target.result }));
         };
         reader.readAsDataURL(compressed);
       } catch (error) {
@@ -126,7 +126,7 @@ function CreateCardScreen({ user, theme }) {
               type="text"
               className="form-input"
               value={card.name}
-              onChange={(e) => setCard({ ...card, name: e.target.value })}
+              onChange={(e) => setCard(new BusinessCard({ ...card, name: e.target.value }))}
               placeholder={t('name')}
             />
           </div>
@@ -136,7 +136,7 @@ function CreateCardScreen({ user, theme }) {
             <textarea
               className="form-textarea"
               value={card.address}
-              onChange={(e) => setCard({ ...card, address: e.target.value })}
+              onChange={(e) => setCard(new BusinessCard({ ...card, address: e.target.value }))}
               placeholder={t('address')}
             />
           </div>
@@ -146,10 +146,10 @@ function CreateCardScreen({ user, theme }) {
             fields={card.phones}
             onAdd={() => {
               if (card.phones.length < 3) {
-                setCard({
+                setCard(new BusinessCard({
                   ...card,
                   phones: [...card.phones, new DynamicField('', '')]
-                });
+                }));
               } else {
                 showToast(t('max_fields'));
               }
@@ -157,11 +157,11 @@ function CreateCardScreen({ user, theme }) {
             onChange={(index, field, value) => {
               const newPhones = [...card.phones];
               newPhones[index][field] = value;
-              setCard({ ...card, phones: newPhones });
+              setCard(new BusinessCard({ ...card, phones: newPhones }));
             }}
             onRemove={(index) => {
               const newPhones = card.phones.filter((_, i) => i !== index);
-              setCard({ ...card, phones: newPhones });
+              setCard(new BusinessCard({ ...card, phones: newPhones }));
             }}
           />
 
@@ -170,10 +170,10 @@ function CreateCardScreen({ user, theme }) {
             fields={card.emails}
             onAdd={() => {
               if (card.emails.length < 3) {
-                setCard({
+                setCard(new BusinessCard({
                   ...card,
                   emails: [...card.emails, new DynamicField('', '')]
-                });
+                }));
               } else {
                 showToast(t('max_fields'));
               }
@@ -181,11 +181,11 @@ function CreateCardScreen({ user, theme }) {
             onChange={(index, field, value) => {
               const newEmails = [...card.emails];
               newEmails[index][field] = value;
-              setCard({ ...card, emails: newEmails });
+              setCard(new BusinessCard({ ...card, emails: newEmails }));
             }}
             onRemove={(index) => {
               const newEmails = card.emails.filter((_, i) => i !== index);
-              setCard({ ...card, emails: newEmails });
+              setCard(new BusinessCard({ ...card, emails: newEmails }));
             }}
           />
 
@@ -194,10 +194,10 @@ function CreateCardScreen({ user, theme }) {
             fields={card.websites}
             onAdd={() => {
               if (card.websites.length < 3) {
-                setCard({
+                setCard(new BusinessCard({
                   ...card,
                   websites: [...card.websites, new DynamicField('', '')]
-                });
+                }));
               } else {
                 showToast(t('max_fields'));
               }
@@ -205,11 +205,11 @@ function CreateCardScreen({ user, theme }) {
             onChange={(index, field, value) => {
               const newWebsites = [...card.websites];
               newWebsites[index][field] = value;
-              setCard({ ...card, websites: newWebsites });
+              setCard(new BusinessCard({ ...card, websites: newWebsites }));
             }}
             onRemove={(index) => {
               const newWebsites = card.websites.filter((_, i) => i !== index);
-              setCard({ ...card, websites: newWebsites });
+              setCard(new BusinessCard({ ...card, websites: newWebsites }));
             }}
           />
 
@@ -218,10 +218,10 @@ function CreateCardScreen({ user, theme }) {
             fields={card.faxes}
             onAdd={() => {
               if (card.faxes.length < 3) {
-                setCard({
+                setCard(new BusinessCard({
                   ...card,
                   faxes: [...card.faxes, new DynamicField('', '')]
-                });
+                }));
               } else {
                 showToast(t('max_fields'));
               }
@@ -229,11 +229,11 @@ function CreateCardScreen({ user, theme }) {
             onChange={(index, field, value) => {
               const newFaxes = [...card.faxes];
               newFaxes[index][field] = value;
-              setCard({ ...card, faxes: newFaxes });
+              setCard(new BusinessCard({ ...card, faxes: newFaxes }));
             }}
             onRemove={(index) => {
               const newFaxes = card.faxes.filter((_, i) => i !== index);
-              setCard({ ...card, faxes: newFaxes });
+              setCard(new BusinessCard({ ...card, faxes: newFaxes }));
             }}
           />
 
@@ -242,7 +242,7 @@ function CreateCardScreen({ user, theme }) {
             <select
               className="form-select"
               value={card.templateId}
-              onChange={(e) => setCard({ ...card, templateId: parseInt(e.target.value) })}
+              onChange={(e) => setCard(new BusinessCard({ ...card, templateId: parseInt(e.target.value) }))}
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                 <option key={num} value={num}>
@@ -257,7 +257,7 @@ function CreateCardScreen({ user, theme }) {
             <select
               className="form-select"
               value={card.colorTheme}
-              onChange={(e) => setCard({ ...card, colorTheme: e.target.value })}
+              onChange={(e) => setCard(new BusinessCard({ ...card, colorTheme: e.target.value }))}
             >
               <option value="blue">{t('blue_theme')}</option>
               <option value="pink">{t('pink_theme')}</option>
@@ -269,7 +269,7 @@ function CreateCardScreen({ user, theme }) {
             <select
               className="form-select"
               value={card.privacy}
-              onChange={(e) => setCard({ ...card, privacy: e.target.value })}
+              onChange={(e) => setCard(new BusinessCard({ ...card, privacy: e.target.value }))}
             >
               <option value="public">{t('public')}</option>
               <option value="link_only">{t('link_only')}</option>
