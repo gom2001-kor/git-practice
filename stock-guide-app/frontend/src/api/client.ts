@@ -1,13 +1,17 @@
 /**
  * API Client
- * Axios 기반 백엔드 통신
+ * Axios 기반 백엔드 통신 + 데모 모드 지원
  */
 import axios from 'axios';
+import * as mockData from './mockData';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'demo';
+const DEMO_MODE = API_BASE_URL === 'demo';
+
+console.log('🔧 API Mode:', DEMO_MODE ? 'DEMO (No Backend)' : `Backend: ${API_BASE_URL}`);
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: DEMO_MODE ? '' : API_BASE_URL,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -70,6 +74,11 @@ export interface DailyKeyword {
  * 주식 분석 (ReAct 에이전트)
  */
 export const analyzeStock = async (ticker: string, question?: string) => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return mockData.mockAnalysisResult(ticker, question || '분석 요청');
+  }
+
   const response = await apiClient.post('/api/v1/stock/analyze', {
     ticker,
     question,
@@ -81,6 +90,11 @@ export const analyzeStock = async (ticker: string, question?: string) => {
  * 기업 건강진단서
  */
 export const getCompanyDiagnosis = async (ticker: string): Promise<DiagnosisData> => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return mockData.mockDiagnosis(ticker);
+  }
+
   const response = await apiClient.get(`/api/v1/stock/diagnosis/${ticker}`);
   return response.data;
 };
@@ -89,6 +103,11 @@ export const getCompanyDiagnosis = async (ticker: string): Promise<DiagnosisData
  * 실시간 주가
  */
 export const getStockPrice = async (ticker: string): Promise<StockPriceData> => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockData.mockStockPrice(ticker);
+  }
+
   const response = await apiClient.get(`/api/v1/stock/price/${ticker}`);
   return response.data;
 };
@@ -97,6 +116,11 @@ export const getStockPrice = async (ticker: string): Promise<StockPriceData> => 
  * 뉴스 검색
  */
 export const searchNews = async (query: string, days: number = 7) => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { articles: [], overall_sentiment: 0 };
+  }
+
   const response = await apiClient.get('/api/v1/stock/news', {
     params: { query, days },
   });
@@ -107,6 +131,11 @@ export const searchNews = async (query: string, days: number = 7) => {
  * 오늘의 키워드
  */
 export const getDailyKeyword = async (): Promise<DailyKeyword> => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockData.mockDailyKeyword;
+  }
+
   const response = await apiClient.get('/api/v1/stock/daily-keyword');
   return response.data;
 };
@@ -115,6 +144,11 @@ export const getDailyKeyword = async (): Promise<DailyKeyword> => {
  * 관심 목록 조회
  */
 export const getWatchlist = async (): Promise<WatchlistItem[]> => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return mockData.mockWatchlist;
+  }
+
   const response = await apiClient.get('/api/v1/watchlist/');
   return response.data;
 };
@@ -123,6 +157,14 @@ export const getWatchlist = async (): Promise<WatchlistItem[]> => {
  * 관심 목록 추가
  */
 export const addToWatchlist = async (ticker: string, companyName: string, memo?: string) => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return {
+      message: '데모 모드: 관심 목록 추가 시뮬레이션 (실제로는 저장되지 않습니다)',
+      success: true
+    };
+  }
+
   const response = await apiClient.post('/api/v1/watchlist/', {
     ticker,
     company_name: companyName,
@@ -135,6 +177,11 @@ export const addToWatchlist = async (ticker: string, companyName: string, memo?:
  * 관심 목록 업데이트
  */
 export const updateWatchlistItem = async (itemId: number, memo: string) => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { message: '데모 모드: 업데이트 시뮬레이션', success: true };
+  }
+
   const response = await apiClient.patch(`/api/v1/watchlist/${itemId}`, {
     memo,
   });
@@ -145,6 +192,11 @@ export const updateWatchlistItem = async (itemId: number, memo: string) => {
  * 관심 목록 삭제
  */
 export const deleteFromWatchlist = async (itemId: number) => {
+  if (DEMO_MODE) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return { message: '데모 모드: 삭제 시뮬레이션', success: true };
+  }
+
   const response = await apiClient.delete(`/api/v1/watchlist/${itemId}`);
   return response.data;
 };

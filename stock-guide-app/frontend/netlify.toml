@@ -1,0 +1,21 @@
+# Netlify 배포 설정
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# 환경변수 (Netlify 대시보드에서도 설정 가능)
+[build.environment]
+  NODE_VERSION = "18"
+
+# SPA 리다이렉트
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# API 프록시 (백엔드가 있을 경우)
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-backend-url.com/api/:splat"
+  status = 200
+  force = true

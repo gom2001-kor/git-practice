@@ -45,6 +45,11 @@ export default defineConfig({
       }
     })
   ],
+  base: '/', // Netlify 배포 경로
+  build: {
+    outDir: 'dist',
+    sourcemap: false, // 프로덕션에서 소스맵 비활성화
+  },
   server: {
     port: 3000,
     proxy: {
