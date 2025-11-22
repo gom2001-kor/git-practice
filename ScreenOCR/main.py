@@ -28,24 +28,32 @@ class OCRThread(QThread):
         self.image = image
         self.ocr_processor = OCRProcessor()
         self.image_processor = ImageProcessor()
+        self.logger = logging.getLogger(__name__)
 
     def run(self):
         """OCR 처리 실행"""
         try:
+            self.logger.info("OCR 스레드 실행 시작")
+
             # 이미지 전처리
+            self.logger.info("이미지 전처리 시작")
             processed_image = self.image_processor.preprocess_for_ocr(
                 self.image,
                 method='auto'
             )
+            self.logger.info("이미지 전처리 완료")
 
             # OCR 수행
+            self.logger.info("Tesseract OCR 시작")
             extracted_text = self.ocr_processor.extract_text(processed_image)
+            self.logger.info(f"OCR 완료: {len(extracted_text)}자 추출")
 
             # 완료 시그널 전송
             self.finished.emit(extracted_text)
 
         except Exception as e:
             # 에러 시그널 전송
+            self.logger.error(f"OCR 스레드 에러: {e}", exc_info=True)
             self.error.emit(str(e))
 
 
@@ -128,46 +136,56 @@ class ScreenOCRApp:
 
     def on_capture_triggered(self):
         """스페이스바 눌림 - 캡처 시작"""
+        self.logger.info("=== 스페이스바 감지 ===")
+
         if self.is_processing:
             self.logger.warning("이미 처리 중입니다")
             return
 
         self.is_processing = True
-        self.logger.info("캡처 트리거됨")
+        self.logger.info("캡처 프로세스 시작")
 
         try:
             # 1. 캡처 중 메시지 표시
+            self.logger.info("1. 캡처 중 메시지 표시")
             self.main_window.show_capturing_message()
             QApplication.processEvents()
 
             # 2. 메인 윈도우 숨김
+            self.logger.info("2. 메인 윈도우 숨김")
             self.main_window.hide()
             QApplication.processEvents()
 
             # 3. 0.3초 대기 (창이 완전히 사라질 시간)
+            self.logger.info("3. 0.3초 대기")
             time.sleep(0.3)
 
             # 4. 화면 캡처
+            self.logger.info("4. 화면 캡처 시작")
             self.current_image = self.capture.capture_all_screens()
-            self.logger.info("화면 캡처 완료")
+            self.logger.info(f"화면 캡처 완료: {self.current_image.size if self.current_image else 'None'}")
 
             # 5. 메인 윈도우 다시 표시
+            self.logger.info("5. 메인 윈도우 다시 표시")
             self.main_window.show()
             QApplication.processEvents()
 
             # 6. OCR 처리 중 메시지 표시
+            self.logger.info("6. OCR 처리 중 메시지 표시")
             self.main_window.show_processing_message()
             QApplication.processEvents()
 
             # 7. OCR 처리 (별도 스레드)
+            self.logger.info("7. OCR 스레드 시작")
             self.start_ocr_processing()
 
         except Exception as e:
-            self.logger.error(f"캡처 중 오류 발생: {e}")
+            self.logger.error(f"캡처 중 오류 발생: {e}", exc_info=True)
             QMessageBox.critical(
                 self.main_window,
                 "오류",
-                f"화면 캡처 중 오류가 발생했습니다:\n{str(e)}"
+                f"화면 캡처 중 오류가 발생했습니다:\n{str(e)}\n\n"
+                f"로그 파일: {self.file_manager.log_file}"
             )
             self.reset_state()
 
@@ -178,8 +196,42 @@ class ScreenOCRApp:
         self.ocr_thread.error.connect(self.on_ocr_error)
         self.ocr_thread.start()
 
+        # 타임아웃 설정 (30초)
+        QTimer.singleShot(30000, self.check_ocr_timeout)
+
+    def check_ocr_timeout(self):
+        """OCR 타임아웃 체크"""
+        if self.is_processing and self.ocr_thread and self.ocr_thread.isRunning():
+            self.logger.error("OCR 처리 타임아웃 (30초 초과)")
+
+            # 스레드 강제 종료
+            self.ocr_thread.terminate()
+            self.ocr_thread.wait()
+
+            # UI 복원
+            self.main_window.reset_ui()
+
+            # 에러 메시지
+            QMessageBox.critical(
+                self.main_window,
+                "타임아웃",
+                "OCR 처리 시간이 너무 오래 걸립니다 (30초 초과).\n\n"
+                "가능한 원인:\n"
+                "- Tesseract OCR 경로 문제\n"
+                "- 이미지가 너무 큼\n"
+                "- 시스템 리소스 부족\n\n"
+                "로그 파일을 확인하세요:\n"
+                f"{self.file_manager.log_file}"
+            )
+
+            # 상태 초기화
+            self.reset_state()
+
     def on_ocr_finished(self, extracted_text):
         """OCR 처리 완료"""
+        if not self.is_processing:
+            return  # 이미 타임아웃으로 종료됨
+
         self.logger.info(f"OCR 완료: {len(extracted_text)} 글자")
         self.current_text = extracted_text
 
@@ -194,6 +246,9 @@ class ScreenOCRApp:
 
     def on_ocr_error(self, error_message):
         """OCR 처리 오류"""
+        if not self.is_processing:
+            return  # 이미 타임아웃으로 종료됨
+
         self.logger.error(f"OCR 오류: {error_message}")
 
         # UI 복원
